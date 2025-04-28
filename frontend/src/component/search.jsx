@@ -21,7 +21,7 @@ const runSearch=async (e)=>{
     try {
       console.log('city?.name')
       console.log(city?.name)
-      const response = await axios.get(`http://localhost:8000/api/search/${searchText}/${city?.name}`);
+      const response = await axios.get(`https://job-3f5h.onrender.com/api/search/${searchText}/${city?.name}`);
       if (response) {  
         console.log(response.data)       
         setResult(response.data)         

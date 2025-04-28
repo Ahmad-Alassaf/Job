@@ -15,7 +15,7 @@ const Home = () => {
     const [showModal, setShowModal] = useState(false);
   const getAllJobs=async()=>{        
     try {
-        const response=await axios.get(`http://localhost:8000/api/jobs/${limit}/${currentPage}`)
+        const response=await axios.get(`https://job-3f5h.onrender.com/api/jobs/${limit}/${currentPage}`)
         if(response){
            console.log(response.data)
             setJobs( response.data.jobs)

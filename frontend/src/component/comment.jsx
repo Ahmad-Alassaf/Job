@@ -26,7 +26,7 @@ const Comment = ({job}) => {
             Authorization:`Bearer ${user.token}`
         }
         try {
-            const response=await axios.post(`http://localhost:8000/api/comments/${job._id}`,commentForm,{headers})
+            const response=await axios.post(`https://job-3f5h.onrender.com/api/comments/${job._id}`,commentForm,{headers})
             if(response.data){
                 getComments()
                 
@@ -41,7 +41,7 @@ const Comment = ({job}) => {
     }
     const getComments=async()=>{    
         try {
-            const response=await axios.get(`http://localhost:8000/api/comments/${job._id}`)           
+            const response=await axios.get(`https://job-3f5h.onrender.com/api/comments/${job._id}`)           
             if(response){
                 setComments( response.data)
             }

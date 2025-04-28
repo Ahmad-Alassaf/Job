@@ -24,7 +24,7 @@ const givePullLike=async(job)=>{
       if(job.likes.some(like=>like.userId===user._id))
       {
          
-          const unliked=await axios.post(`http://localhost:8000/api/jobs/pulllike/${job._id}`,job,{headers})
+          const unliked=await axios.post(`https://job-3f5h.onrender.com/api/jobs/pulllike/${job._id}`,job,{headers})
           if(unliked)
               setLikeColor('btn btn-secondary')
           
@@ -33,7 +33,7 @@ const givePullLike=async(job)=>{
       else
       {
          
-          const liked=await axios.post(`http://localhost:8000/api/jobs/givelike/${job._id}`,job,{headers})
+          const liked=await axios.post(`https://job-3f5h.onrender.com/api/jobs/givelike/${job._id}`,job,{headers})
           if(liked)
               setLikeColor('btn btn-primary')
          

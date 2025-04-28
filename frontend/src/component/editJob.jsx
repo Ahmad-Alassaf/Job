@@ -56,7 +56,7 @@ const EditJob = () => {
                 const headers={            
                     Authorization:`Bearer ${user.token}`
                 }
-                const response= await axios.get(`http://localhost:8000/api/jobs/${id}`,{headers})                   
+                const response= await axios.get(`https://job-3f5h.onrender.com/api/jobs/${id}`,{headers})                   
                 if(response)
                 {      
                     console.log('response from edit')         
@@ -96,7 +96,7 @@ const EditJob = () => {
                     formData.append('salary', JSON.stringify(dataForm.salary))
                     formData.append('location',dataForm.location)
                     formData.append('adresse', JSON.stringify(dataForm.adresse))
-                    const response= await axios.post(`http://localhost:8000/api/jobs`,formData,{headers})                   
+                    const response= await axios.post(`https://job-3f5h.onrender.com/api/jobs`,formData,{headers})                   
                     if(response)
                     {               
                              

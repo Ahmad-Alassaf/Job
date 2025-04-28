@@ -56,7 +56,7 @@ const NewJob = () => {
             Authorization:`Bearer ${user.token}`
         }
         try {
-            const response= await axios.get(`http://localhost:8000/api/jobs/${id}`,{headers})                   
+            const response= await axios.get(`https://job-3f5h.onrender.com/api/jobs/${id}`,{headers})                   
                     if(response)
                     { 
                         console.log('getJobToEdit Function is called ') 
@@ -104,7 +104,7 @@ const NewJob = () => {
 
                     console.log('editing......')
                     console.log(formData)
-                    const response= await axios.put(`http://localhost:8000/api/jobs/${id}`,formData,{headers})                   
+                    const response= await axios.put(`https://job-3f5h.onrender.com/api/jobs/${id}`,formData,{headers})                   
                     if(response)
                     {               
                         
@@ -116,7 +116,7 @@ const NewJob = () => {
                 }
                 else{
                     //create
-                    const response= await axios.post(`http://localhost:8000/api/jobs`,formData,{headers})                   
+                    const response= await axios.post(`https://job-3f5h.onrender.com/api/jobs`,formData,{headers})                   
                     if(response)
                     {               
                         
