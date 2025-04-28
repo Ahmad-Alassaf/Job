@@ -4,7 +4,7 @@ import axios from 'axios'
 import JobCard from './jobCard'
 import JobDetails from './jobDetails'
 import useScreenSize from './useScreenSize'
-import { set } from 'mongoose'
+
 const Home = () => {
   const screen=useScreenSize()
     const [jobs,setJobs]=useState([])
