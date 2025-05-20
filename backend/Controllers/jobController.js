@@ -6,10 +6,10 @@ const { json } = require('stream/consumers');
 // Add Job (Fixed)
 const addJob = asyncHandler(async (req, res) => { 
     console.log('add job controller called....')
-    console.log(req.body)
+   
     try {    
-            const { title,companyName, description, type, work,workingdays, salary,tasks,skills,languages,performances, location,adresse } = req.body
-            if (!title || !description || !salary || !type || !work || !location  ) 
+            const { title,companyName,category, description, type, work,workingdays, salary,tasks,skills,languages,performances, location,adresse } = req.body
+            if (!title || !description || !salary || !type || !work || !location || !category  ) 
                 {
                 if (req.file) {
                                     try {
@@ -40,10 +40,11 @@ const addJob = asyncHandler(async (req, res) => {
             imageUrl: `/uploads/${req.file.filename}`, // Save file path
             likes: [],
             user: req.user.id,
+            category:category
           })
               
           console.log('created Job is')
-          console.log(newJob)
+          
           res.status(201).json(newJob);
     } catch (error) {   
         console.log(error)  
@@ -52,7 +53,8 @@ const addJob = asyncHandler(async (req, res) => {
 })
 const getOneJob=asyncHandler(async(req,res)=>{
     try {
-        const job=await Job.findOne({_id:req.params.id,user:req.user.id})
+        const job=await Job.findOne({_id:req.params.id}).populate('user')
+        console.log('Backend: getOneJob function ',job)
         if(!job)
         {
             res.status(401)
@@ -61,18 +63,19 @@ const getOneJob=asyncHandler(async(req,res)=>{
        res.status(200).json(job)
         
     } catch (error) {
+        console.log(error)
         
     }
 
 })
 // get all Jobs  for user 
 const getMyJobs=asyncHandler(async(req,res)=>{
-    console.log(req.params)
-    const page = parseInt(req.params.currentPage) || 1;
+   
+    //const page = parseInt(req.params.currentPage) || 1;
             const limit = parseInt(req.params.limit) || 10;
-            const skip = (page - 1) * limit;
+          //  const skip = (page - 1) * limit;
     try {
-        const jobs=await Job.find({user:req.user.id}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('user')
+        const jobs=await Job.find({user:req.user.id}).sort({ createdAt: -1 }).limit(limit).populate('user')
         if(!jobs)
             {
                 res.status(401)
@@ -81,8 +84,8 @@ const getMyJobs=asyncHandler(async(req,res)=>{
             const total = await Job.countDocuments();
        res.status(200).json({
         jobs,
-        totalPages:Math.ceil(total/limit),
-        currentPage:page
+       // totalPages:Math.ceil(total/limit),
+        //currentPage:page
        })
         
     } catch (error) {
@@ -93,39 +96,66 @@ const getMyJobs=asyncHandler(async(req,res)=>{
 })
 // get all Jobs  for Homepage
 const getJobs=asyncHandler(async(req,res)=>{
-            const page = parseInt(req.params.currentPage) || 1;
+           // const page = parseInt(req.params.currentPage) || 1;
             const limit = parseInt(req.params.limit) || 10;
-            const skip = (page - 1) * limit;
+            const filters=req.query.filters
+            const filterArray = filters ? filters.split(',') : []
+           
+           // const skip = (page - 1) * limit;
     try {
-        const jobs=await Job.find().sort({ createdAt: -1 }).skip(skip).limit(limit).populate('user')
-        if(!jobs)
-            {
-                res.status(401)
-                throw new Error(' no Jobs ....')
-            }
-            const total = await Job.countDocuments();
-       res.status(200).json({
-        jobs,
-        totalPages:Math.ceil(total/limit),
-        currentPage:page
-       })
+        //const jobs=await Job.find().sort({ createdAt: -1 }).skip(skip).limit(limit).populate('user')
+                        const query = {};
+
+                if (filterArray.length > 0) {
+                    query.category = { $in: filterArray };
+                }
+                if (Object.keys(query).length > 0) {
+                    // Query object has at least one property
+                     const jobs=await Job.find(query).sort({ createdAt: -1 }).limit(limit).populate('user')
+                      if(!jobs)
+                                {
+                                    res.status(401)
+                                    throw new Error(' no Jobs ....')
+                                }
+                          const total = await Job.countDocuments();
+                        res.status(200).json({
+                            jobs,
+                                                        // totalPages:Math.ceil(total/limit),
+                                //  currentPage:page
+                                })  
+                      
+                    }
+                    else{
+                         const jobs=await Job.find().sort({ createdAt: -1 }).limit(limit).populate('user')
+                           if(!jobs)
+                                {
+                                    res.status(401)
+                                    throw new Error(' no Jobs ....')
+                                }
+                          const total = await Job.countDocuments();
+                        res.status(200).json({
+                            jobs,
+                                                        // totalPages:Math.ceil(total/limit),
+                                //  currentPage:page
+                                })  
+
+                    }
         
-    } catch (error) {
-        
-    }
-   
+       
+            
+    } catch (error) {  }   
 })
 const setJob=asyncHandler(async(req,res)=>{
     try {
-        const { title,companyName, description, type, work,workingdays, salary,tasks,skills,languages,performances, location,adresse } = req.body
+        const { title,category,companyName, description, type, work,workingdays, salary,tasks,skills,languages,performances, location,adresse } = req.body
         const job=await Job.findOne({_id:req.params.id,user:req.user.id})
-        console.log('req.body')
-        console.log(req.body)
+       
         if(!job)
         {
             res.status(401)
             throw new Error(' Job not Found !!!!')
         }
+        const photoPath =req.file? `/uploads/${req.file.filename}`:job.imageUrl
         const modefiedJob=await Job.findByIdAndUpdate(job._id,{
             title:title,
             companyName:companyName,
@@ -135,19 +165,21 @@ const setJob=asyncHandler(async(req,res)=>{
             workingdays:JSON.parse(workingdays || "null"),
             tasks:JSON.parse(tasks || "null"),
             skills:JSON.parse(skills|| "null"),
-            languages:['test'],
+            languages:JSON.parse(languages|| "null"),
             performances:JSON.parse(performances ||'null'),
             salary:JSON.parse(salary ||'null'),
             adresse:JSON.parse(adresse ||'null'),
             location,
-            imageUrl: `/uploads/${req.file.filename}`, // Save file path
+            imageUrl: photoPath, // Save file path
+            imageUrl: photoPath, // Save file path
             likes: [],
             user: req.user.id,
+            category:category
 
         })
       
         
-        console.log(modefiedJob)
+       console.log('Backend: setJob Function called and modefied Job',modefiedJob)
        res.status(200).json(modefiedJob)
         
     } catch (error) {
@@ -173,16 +205,16 @@ const deleteJob=asyncHandler(async(req,res)=>{
     }
 })
 const like=asyncHandler(async(req,res)=>{
-    console.log('called...')
-    const job=await Job.findOne({_id:req.params.id})
-    console.log(job)
+   
+    const job=await Job.findOne({_id:req.params.id})//get Job from database
+    console.log(job)// print Job later delete this line 
     try {
-        const userId=req.user.id
-        const createdDate=Date.now()
+        const userId=req.user.id // get User ID that send request 
+        const createdDate=Date.now()// only for date formating..
             job.likes.push({userId,createdDate})
-        
+        const likesList=job.likes.filter((like)=>like.userId)        
         const likedJob=await Job.findByIdAndUpdate(job._id,job)
-        console.log(likedJob)
+       
         if(!likedJob)
         {
             res.status(401)
@@ -193,34 +225,70 @@ const like=asyncHandler(async(req,res)=>{
         console.log(error)
         
     }
-   
-   
-    
     res.status(200).json(likedJob)
 
 })
 const pulllike=asyncHandler(async(req,res)=>{
-    console.log('pullLike called...')
+  
     const job=await Job.findById(req.params.id)
-    console.log(job)
+   
     if(job){
      
         job.likes= job.likes.filter(like=>like.userId!==req.user.id)
-        console.log('job befor save...')       
+        
         await job.save()       
-        res.status(200).json(likedJob)
+        res.status(200).json(job)
     }
     else{
         res.status(401)
         throw new Error(' Job not Found !!!!')
 
     }
-   
-   
-    
-    
 
 })
+const savingJob=asyncHandler(async(req,res)=>{
+  
+    const job=await Job.findOne({_id:req.params.id})//get Job from database
+   
+    try {
+        const userId=req.user.id // get User ID that send request 
+        const createdDate=Date.now()// only for date formating..
+        job.savedJobList.push({userId,createdDate})
+           
+        const savedJob=await Job.findByIdAndUpdate(job._id,job)
+       
+        if(!savedJob)
+        {
+            res.status(401)
+            throw new Error(' Job not Found !!!!')
+        }
+        res.status(200).json(savedJob)
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+   
+
+})
+const unsavingJob=asyncHandler(async(req,res)=>{
+    
+    const job=await Job.findById(req.params.id)
+   
+    if(job){
+     
+        job.savedJobList= job.likes.filter(like=>like.userId!==req.user.id)
+            
+        await job.save()       
+        res.status(200).json(job)
+    }
+    else{
+        res.status(401)
+        throw new Error(' Job not Found !!!!')
+
+    }
+})
+
 module.exports={
-    addJob,getMyJobs,getJobs,getOneJob,setJob,deleteJob,like,pulllike
+    addJob,getMyJobs,getJobs,getOneJob,setJob,deleteJob,like,pulllike,unsavingJob,savingJob
 }

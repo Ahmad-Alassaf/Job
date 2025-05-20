@@ -24,14 +24,16 @@ app.use(cors())
 //Routing
 app.use('/api/user',require('./Routers/authRoute'))
 app.use('/api/jobs',require('./Routers/jobRoute'))
+app.use('/api/categories',require('./Routers/categoryRoute'))
 app.use('/api/comments',require('./Routers/commentRoute'))
 app.use('/api/search',require('./Routers/searchRoute'))
 app.use("/api/upload", require("./Routers/uploadRoutes"))
 app.use(errorHandler)
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/build')));
+    app.use(express.static(path.join(__dirname, '../frontend/build')))
+    
   
-    app.get('*', (req, res) => {
+app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
     });
   }

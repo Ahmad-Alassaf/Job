@@ -60,7 +60,7 @@ const register=asyncHandler(async (req,res)=>{
 
 })
 const generateToken=(id)=>{
-    return jwebtoken.sign({id},process.env.JWT_SECRET,{expiresIn:'1d'})
+    return jwebtoken.sign({id},process.env.JWT_SECRET,{expiresIn:'10d'})
 
 }
 const login=asyncHandler(async (req,res)=>{

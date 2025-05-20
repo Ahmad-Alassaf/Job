@@ -13,7 +13,9 @@
     import Adresse from './adresse'
 
 const EditJob = () => {
-           
+    const myServer = process.env.NODE_ENV === 'production' 
+  ? '`https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000';
             const  {id}  = useParams()           
              const[error, setError]=useState(null)
             const [dataForm,setDataForm]=useState({
@@ -56,7 +58,7 @@ const EditJob = () => {
                 const headers={            
                     Authorization:`Bearer ${user.token}`
                 }
-                const response= await axios.get(`https://job-3f5h.onrender.com/api/jobs/${id}`,{headers})                   
+                const response= await axios.get(`${myServer}/api/jobs/${id}`,{headers})                   
                 if(response)
                 {      
                     console.log('response from edit')         
@@ -96,7 +98,7 @@ const EditJob = () => {
                     formData.append('salary', JSON.stringify(dataForm.salary))
                     formData.append('location',dataForm.location)
                     formData.append('adresse', JSON.stringify(dataForm.adresse))
-                    const response= await axios.post(`https://job-3f5h.onrender.com/api/jobs`,formData,{headers})                   
+                    const response= await axios.post(`${myServer}/api/jobs`,formData,{headers})                   
                     if(response)
                     {               
                              

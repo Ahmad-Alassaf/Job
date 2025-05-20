@@ -25,11 +25,13 @@ const JobsList = () => {
         "Content-Type":"application/json",
         Authorization:`Bearer ${user.token}`
     }
-    
+    const myServer = process.env.NODE_ENV === 'production' 
+  ? '`https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000';
     const getAllMyJobs=async()=>{
         
         try {
-            const jobsList=await axios.get(`https://job-3f5h.onrender.com/api/jobs/myjobs/${limit}/${currentPage}`,{headers})
+            const jobsList=await axios.get(`${myServer}/api/jobs/myjobs/${limit}/${currentPage}`,{headers})
             if(jobsList){
                console.log('JobsList:')
                console.log(jobsList.data)
@@ -47,7 +49,7 @@ const JobsList = () => {
 
     const handleOnDelete=async(id)=>{
         try {
-            const deleted=await axios.delete(`https://job-3f5h.onrender.com/api/jobs/${id}`,{headers})
+            const deleted=await axios.delete(`${myServer}/api/jobs/${id}`,{headers})
             if(deleted){
                 getAllMyJobs()
             }
@@ -86,7 +88,7 @@ const JobsList = () => {
             if(job.likes.some(like=>like.userId===user._id))
             {
                
-                const unliked=await axios.post(`https://job-3f5h.onrender.com/api/jobs/pulllike/${job._id}`,job,{headers})
+                const unliked=await axios.post(`${myServer}/api/jobs/pulllike/${job._id}`,job,{headers})
                 if(unliked)
                     setLikeColor('btn btn-secondary')
                 
@@ -95,7 +97,7 @@ const JobsList = () => {
             else
             {
                
-                const liked=await axios.post(`https://job-3f5h.onrender.com/api/jobs/givelike/${job._id}`,job,{headers})
+                const liked=await axios.post(`${myServer}/api/jobs/givelike/${job._id}`,job,{headers})
                 if(liked)
                     setLikeColor('btn btn-primary')
                
@@ -154,7 +156,7 @@ const JobsList = () => {
          <div className="card mb-1" key={job._id}>
                 <div className="card-header p-0">
                     <div>
-                    <img src={`https://job-3f5h.onrender.com${job.imageUrl}`}  className="" style={{ width: '100%'}}/>
+                    <img src={`${myServer}${job.imageUrl}`}  className="" style={{ width: '100%'}}/>
                     </div>
                     <div className=" ">
                         <div className='  '>

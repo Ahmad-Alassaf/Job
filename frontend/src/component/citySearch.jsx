@@ -18,41 +18,34 @@ const CitySearch = ({sendCity}) => {
      
       }
       useEffect((e)=>{ 
-        console.log('ues Effect selectedCity.....') 
-        console.log(selectedCity)                            
+                                
                         if(searchTerm==='' )
                         {
                             setFilteredCities([])                            
                             return
                         }
-                          const results = germanCities.filter(
+                        
+                        if(selectedCity)
+                            {
+                                sendCity(selectedCity.name)
+                                setSearchTerm(selectedCity.name)
+                                setFilteredCities([])
+                                return
+                            }
+                            const results = germanCities.filter(
                                 (city) =>
                                     city?.name.toLowerCase().startsWith(searchTerm?.toLowerCase())                 
                                 )               
-                                setFilteredCities(results) 
-                            if(selectedCity)
-                            {
-                                sendCity(selectedCity)
-                                setSearchTerm(selectedCity.name)
-                                setFilteredCities([])
-                            }
+                                setFilteredCities(results)
                               
                                 
                         
                     },[searchTerm,selectedCity]
                 )                
-     const handleSearchTermChange=(e)=>{
-        console.log('1')
-        setSelectedCity(null)
-        console.log('2')
-        sendCity(selectedCity)
-        console.log('3')
-        console.log(selectedCity)
-        console.log('4')
-        setSearchTerm(e.target.value)
-        console.log('5')
-        console.log('e.target.value')
-        console.log(e.target.value)
+     const handleSearchTermChange=(e)=>{       
+        setSelectedCity(null)        
+       sendCity(null)       
+        setSearchTerm(e.target.value)       
 
      }
   const   style={

@@ -5,38 +5,66 @@ import CitySearch from './citySearch'
 import { BiBorderRadius } from 'react-icons/bi';
 import {Link ,Navigate,useNavigate} from 'react-router-dom'
 const Search = ({ getCityData}) => {
+  const myServer = process.env.NODE_ENV === 'production' 
+  ? '`https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000';
    const [shadow, setShadow] = useState("7px 7px 10px rgba(0,0,0,0.5)")
    const [result,setResult]=useState([])
-   const [city,setCity]=useState(null)
+   const [city,setCity]=useState('')
    const [searchText,setSearchText]=useState('')
-     const navigate = useNavigate();
+     const navigate = useNavigate()
+     const [error,setError]=useState(null)
+     const [message,setMessage]=useState(null)
  const handleSearchChange =async (e) => {
     setSearchText(e.target.value)
+   
+      setResult([])
+      setError(null)
+      setMessage(null)
+
+   
+      
+   
  
 }
-const runSearch=async (e)=>{
-  e.preventDefault()
+const runSearch=async ()=>{
+  console.log('Run Search fired....')
   console.log(searchText)
-  if (searchText !== "") {
+  if (searchText.trim() !== "") {
     try {
-      console.log('city?.name')
-      console.log(city?.name)
-      const response = await axios.get(`https://job-3f5h.onrender.com/api/search/${searchText}/${city?.name}`);
-      if (response) {  
+      console.log('city name')
+      console.log(city)
+      console.log('search text')
+      console.log(searchText)
+      const response = await axios.get(`${myServer}/api/search/${searchText}/${city}`);
+      if (response) {
+        console.log("response.data")   
         console.log(response.data)       
-        setResult(response.data)         
+        setResult(response.data.result) 
+        if (response.data.result.length===0 )
+           setMessage(`Es gibt keine Stellen für :${searchText} in ${city}`)  
+        else{
+          setMessage(response.data.result.length+' Ergebnis/Ergebnisse')  
+         
+        }
+                
+      }
+      else{
+        console.log('No Response.....')
+        
       }
     } catch (error) {
       console.log('Error in search controller....')
       console.log(error)
+      setError(error.message)
     
     }
   } 
 
 }
-const getCity=(location)=>{
+const getCity=(cityname)=>{
   
-    setCity(location)
+    setCity(cityname)
    
  
 }
@@ -45,7 +73,14 @@ const handleOnClick=(item)=>{
   setResult([])
    
  // navigate("/job", { state: { job: item } })  
-} 
+}
+useEffect(()=>{
+  
+          if(result.length>0)      
+           navigate(`/showsearchresult`,{state:{result}})
+         
+
+},[result]) 
 const style={
   searchstyle:{
     boxShadow: shadow,
@@ -70,14 +105,19 @@ const style={
 
   }
 } 
-useEffect(()=>{
  
-
-},[city,searchText])  
   return (
    
-    <div className='container-md-fluid container-lg py-4  ' >
-      <div className='row justify-content-center  p-0 m-0'>
+    <div className=' d-flex justify-content-center align-items-center ' 
+    style={{
+    backgroundImage: `url('/images/jobsuche2.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    height: '400px',
+    width: '100%',
+  }}>
+    <div className="container">
+      <div className='row justify-content-center   p-0 m-0 w-100'>
          <div className="col-12  col-md-9 justify-content-between d-flex   p-0 rounded " 
                 style={style.searchstyle} onMouseEnter={() => setShadow("5px 5px 15px rgba(0, 0, 0, 0.3)")}
                                           onMouseLeave={() => setShadow("0px 0px 0px rgba(0,0,0,0)")}>        
@@ -102,24 +142,13 @@ useEffect(()=>{
                         onClick={runSearch}
                       > <FaSearch /> </button>                      
                     </div>      
-                        
+                             
          </div>
-       
+         <div className='col-12  col-md-9'>
+               {message &&(<p className={result.length>0 ? 'text-muted':'text-danger   '}> {message}</p>)}  
+         </div>
       </div>
-      <div className=" row justify-content-center p-0 ">
-        <div className="col-12  col-md-9 position-relative   p-0">
-            <ul className='col-9 bg-light mt-2' style={result.length > 0 ?style.searchresultStyle:{}}>
-            {result.length > 0 ? (
-              result.map((item) => 
-              <li key={item._id} className='list-group-item py-2 pointer'>
-              <div>
-                  <h5 onClick={()=>handleOnClick(item)} className='text-primary  '>{item.title}</h5>           
-              </div>
-              </li>)
-            ) :<></>}
-          </ul>
-        </div>
-      </div> 
+    </div>
            
     </div>
    

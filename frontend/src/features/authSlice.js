@@ -9,11 +9,15 @@ const initialState={
     success:false,
     error:false,
     message:''
-} 
+}
+
 export const register=createAsyncThunk('auth/register',async(credintialData,ThunkAPI)=>{
+    const myServer = process.env.NODE_ENV === 'production' 
+  ? '`https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000';
     try {
         
-        const response=await axios.post(`https://job-3f5h.onrender.com/api/user/register`,credintialData)
+        const response=await axios.post(`${myServer}/api/user/register`,credintialData)
         if(response)
         {
             localStorage.setItem('user',JSON.stringify(response.data))
@@ -27,8 +31,11 @@ export const register=createAsyncThunk('auth/register',async(credintialData,Thun
     }
 })
 export const login=createAsyncThunk('auth/login',async(credintialData,ThunkAPI)=>{
+    const myServer = process.env.NODE_ENV === 'production' 
+  ? '`https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000';
     try {
-        const response=await axios.post(`https://job-3f5h.onrender.com/api/user/login`,credintialData)
+        const response=await axios.post(`${myServer}/api/user/login`,credintialData)
        
         if(response)
             {

@@ -4,42 +4,92 @@ import { useSelector } from 'react-redux'
 import axios from 'axios'
 import ReadMoreLess from './readMoreLess'
 import { FaLocationDot } from "react-icons/fa6"
-import { FaTrash     } from 'react-icons/fa'
+import { FaTrash, FaStore     } from 'react-icons/fa'
 import {   BiSolidLike } from 'react-icons/bi'
 import Comment from './comment'
-const JobDetails = ({job}) => {
+
+const JobdetailsComponent = ({job}) => {
+   
+    
     const {user}=useSelector((state)=>state.auth)
     const [likeColor,setLikeColor]=useState('btn-secondary')
     const [addComment,setAddComment]=useState('')
     const [showComments,setShowComments]=useState(false)
-    const [url,setUrl]=useState(null)
+    const[url,setUrl]=useState(null)
     const [loading, setLoading] = useState(true)
-   
+    const myServer = process.env.NODE_ENV === 'production' 
+  ? 'https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000';
 const givePullLike=async(job)=>{
   try {
       const headers={
           "Content-Type":"application/json",
           Authorization:`Bearer ${user.token}`
       }
+
       if(job.likes.some(like=>like.userId===user._id))
       {
          
-          const unliked=await axios.post(`https://job-3f5h.onrender.com/api/jobs/pulllike/${job._id}`,job,{headers})
+          const unliked=await axios.post(`${myServer}/api/jobs/pulllike/${job._id}`,job,{headers})
           if(unliked)
-              setLikeColor('btn btn-secondary')
-          
+              setLikeColor('btn btn-secondary')         
          
       }
       else
       {
          
-          const liked=await axios.post(`https://job-3f5h.onrender.com/api/jobs/givelike/${job._id}`,job,{headers})
+          const liked=await axios.post(`${myServer}/api/jobs/givelike/${job._id}`,job,{headers})
           if(liked)
               setLikeColor('btn btn-primary')
-         
+      }
+     
+    
+  } catch (error) {
+      console.log(error)
+      
+  }
 
+}
+const saveunsaveJob=async (job)=>{
+   const headers={
+          "Content-Type":"application/json",
+          Authorization:`Bearer ${user.token}`
+      }
+      console.log(job.savedJobList.filter(item=>item.userId===user._id).length)
+      console.log('Job')
+     console.log(job)
+     console.log('user:')
+      console.log(user)
+   try {
+      
+     
+     if(job.savedJobList.filter(item=>item.userId===user._id).length>0) 
+      {
+         
+          const unsaved=await axios.post(`${myServer}/api/jobs/unsaveJob/${job._id}`,job,{headers})
+          if(unsaved)
+          {
+            job.savedJobList=unsaved.savedJobList
+          }
+            console.log(unsaved)
+              setLikeColor('btn btn-secondary')         
+         
+      }
+      else
+      {
+         const saved=await axios.post(`${myServer}/api/jobs/saveJob/${job._id}`,job,{headers})
+          if(saved)
+          {
+             job.savedJobList=saved.savedJobList
+             console.log(saved)
+
+
+          }
+           
+              setLikeColor('btn btn-secondary')   
 
       }
+     
      
     
   } catch (error) {
@@ -54,7 +104,7 @@ const toggleComment=(id)=>{
 }
 useEffect(() => {
   if (job?.imageUrl) {
-    const imagePath = `http://localhost:8000${job.imageUrl}`;
+    const imagePath = `${myServer}${job.imageUrl}`;
     setUrl(imagePath)
     setLoading(false)
     console.log("Image URL:", imagePath);
@@ -70,7 +120,8 @@ const styles = {
     
     width: "100%",
     height: "100vh",
-    overflow:'auto'
+    overflow:'auto',
+    whiteSpace: "pre-wrap"
     
   
   
@@ -78,13 +129,17 @@ const styles = {
 }
   
   return (
-    <div >
-       { job ? <div className="card mb-1"   style={styles.scrollContainer}>
+    <div className=''>
+       { job ? <div className="card mb-1" >
                
-                <div   className="card-header pt-0 px-0" style={{boxShadow: '0 5px 10px -2px rgba(0, 0, 0, 0.3)'}}>
+                <div   className="card-header pt-0 px-0" >
                         {loading && <div>Loading image...</div>}
-                        {url && (<img src={`http://localhost:8000${job.imageUrl}`}  className="" style={{height:'100px', width: '100%'}}/>)} 
-                        <h5 className='text-primary px-1 text-decoration-underline text-center' > {job.title}</h5>
+                        {url && (<img src={`${myServer}${job.imageUrl}`}  className="img-fluid" style={{ width: '100%'}} />)} 
+                       
+                           <h5 className=' text-primary px-1  text-center' > {job.title}</h5>
+                          
+                       
+                       
                         <button className='btn ' data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
                        <div className="d-flex justify-content-center">
                         <p className='p-0 m-0 text-center'>{job.companyName}</p> 
@@ -96,7 +151,7 @@ const styles = {
                         
                                                         
                 </div>
-                <div className="card-body  f" style={{ whiteSpace: "pre-wrap"}}>
+                <div className="card-body  f"  >
                      <h4>Vertrag & Arbeitszeiten</h4>
                         <ul>
                           <li>
@@ -144,16 +199,23 @@ const styles = {
                    
                     Salary: <span className='text-muted fs-6'>{job.salary.amount}</span>
                     <p className='text-muted fst-italic '> posted by : {job.user.username}</p> 
-                    <span className='text-primary ' style={{cursor: 'pointer'}} onClick={()=>toggleComment(job._id)}>comments</span>
-                    { (addComment===job._id && showComments) ? <Comment job={job} /> :<></>}
+                   
                 </div>
-                <div className="card-footer  text-end text-primary">
-                 {job.likes.length }  <button className={job.likes.some(like=>like.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary disabled'} onClick={()=>givePullLike(job)}>   <BiSolidLike /></button>
+                <div className="card-footer  d-flex justify-content-between text-primary">
+                   <span className='text-primary ' style={{cursor: 'pointer'}} onClick={()=>toggleComment(job._id)}>comments</span>
+                    { (addComment===job._id && showComments) ? <Comment job={job} /> :<></>}
+                    <div>
+                        {job.savedJobList?.length } <button className={job.savedJobList?.some(saved=>saved.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary ' } onClick={()=>saveunsaveJob(job)}><FaStore /></button>
+                        {job.likes.length }  <button className={job.likes.some(like=>like.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary '} onClick={()=>givePullLike(job)}>   <BiSolidLike /></button>
+
+                    </div>
+                  
                </div>
          </div>:<></>}
          
     </div>
   
   )
+
 }
-export default JobDetails
+export default JobdetailsComponent

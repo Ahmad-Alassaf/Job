@@ -6,6 +6,7 @@ import { logout, reset } from "../features/authSlice";
 
 
 const Header = () => {
+  
   const { user } = useSelector((state) => state.auth);
  
   
@@ -25,9 +26,9 @@ useEffect(()=>{
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          <Link className="navbar-brand col-sm-12 col-md-1  text-center" to="/">
-            Jobbörse
+        <div className="container-fluid ">
+          <Link className="navbar-brand col-sm-12 col-md-1  text-center " to="/">
+            Stellen
           </Link>
 
           <button
@@ -43,10 +44,31 @@ useEffect(()=>{
           </button>
 
           <div className="container collapse navbar-collapse  " id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
+            <ul className="navbar-nav m-auto mb-2 mb-lg-0">
+             
+              <li className="nav-item px-2">
                 <Link className="nav-link" to="/">
                  Startseite
+                </Link>
+              </li>
+              <li className="nav-item px-2">
+                <Link className="nav-link" to="/newjob">
+                 Für Arbeitsgeber
+                </Link>
+              </li>
+              <li className="nav-item px-2">
+                <Link className="nav-link" to="/">
+                 Kontakt
+                </Link>
+              </li>
+              <li className="nav-item px-2">
+                <Link className="nav-link" to="/">
+                 Über uns
+                </Link>
+              </li>
+              <li className="nav-item px-2">
+                <Link className="nav-link" to="/dashboard">
+                 DashBoard
                 </Link>
               </li>
             </ul>
@@ -59,7 +81,7 @@ useEffect(()=>{
                   <button  className="nav-link text-primary dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {user.username}
                   </button>
-                  <ul class="dropdown-menu border-0 text-center mt-2" aria-labelledby="navbarDropdown">
+                  <ul className="dropdown-menu border-0 text-center mt-2" aria-labelledby="navbarDropdown">
                         <li><Link to="/jobslist"> myJobs</Link> </li>
                        
                         <li > <Link onClick={handleSignOut}> Sign out</Link> </li>

@@ -10,14 +10,24 @@ import Languges from './languages'
 import Performances from './performance'
 import Adresse from './adresse'
 import { useNavigate,useParams } from 'react-router-dom'
+import { getCategories } from '../utilities/CategoryService'
 
 const NewJob = () => {
+    const {user}=useSelector((state)=>state.auth)
+    const myServer = process.env.NODE_ENV === 'production' 
+  ? 'https://job-3f5h.onrender.com' 
+  : 'http://localhost:8000'
+   const headers={            
+            Authorization:`Bearer ${user.token}`
+        }
            const{id}=useParams()
            const navigate=useNavigate()
            const [jobToEdit,setJobToEdit]=useState(null)
          const[error, setError]=useState(null)
+         const [categoriesList,setCategoriesList]=useState([])
         const [dataForm,setDataForm]=useState({
             title:'',
+            category:'',
             companyName:'',
             description:'',
             type:[],//befristet, unbefristet
@@ -50,20 +60,21 @@ const NewJob = () => {
         const [salaryType,setSalaryType]=useState('')  
         const [imagePath,setImagePath]=useState('') 
         const [image,setImage]=useState(null) 
-     const {user}=useSelector((state)=>state.auth)
+     
      const getJobToEdit=async(id)=>{
-        const headers={            
-            Authorization:`Bearer ${user.token}`
-        }
+       
         try {
-            const response= await axios.get(`https://job-3f5h.onrender.com/api/jobs/${id}`,{headers})                   
+            const response= await axios.get(`${myServer}/api/jobs/job/${id}`,{headers})                   
                     if(response)
                     { 
                         console.log('getJobToEdit Function is called ') 
+                         console.log('Job to edit',response.data) 
                        setJobToEdit(response.data) 
-                       setDataForm(response.data)    
+                        console.log('response.data.imageURL',response.data.imageURL)
+                       setDataForm(response.data) 
+                         
                         setError('') 
-                        console.log(jobToEdit)         
+                               
                       
                     }
             
@@ -86,6 +97,7 @@ const NewJob = () => {
                 const formData = new FormData()
                 formData.append('file',image)
                 formData.append('title',dataForm.title)
+                formData.append('category',dataForm.category)
                 formData.append('companyName',dataForm.companyName)
                 formData.append('description',dataForm.description)
                 formData.append('type',JSON.stringify(dataForm.type))
@@ -104,7 +116,7 @@ const NewJob = () => {
 
                     console.log('editing......')
                     console.log(formData)
-                    const response= await axios.put(`https://job-3f5h.onrender.com/api/jobs/${id}`,formData,{headers})                   
+                    const response= await axios.put(`${myServer}/api/jobs/${id}`,formData,{headers})                   
                     if(response)
                     {               
                         
@@ -116,7 +128,7 @@ const NewJob = () => {
                 }
                 else{
                     //create
-                    const response= await axios.post(`https://job-3f5h.onrender.com/api/jobs`,formData,{headers})                   
+                    const response= await axios.post(`${myServer}/api/jobs`,formData,{headers})                   
                     if(response)
                     {               
                         
@@ -208,11 +220,28 @@ const NewJob = () => {
         console.log(value)
 
     }
+    const handleOnCategoryChange=(e)=>{
+        setDataForm((prev)=>({
+            ...prev,
+            [e.target.name]:e.target.value
+        }))
+
+    }
+     const fetchCategories=async()=>{                                
+                                const data=await getCategories(myServer,headers)                                
+                                setCategoriesList(data||[])
+                            }
           useEffect(()=>{
-            console.log(dataForm)
+                          
+                            fetchCategories()  
+                            
                           
                            if(id)
-                            getJobToEdit(id) 
+                           {
+                             getJobToEdit(id) 
+                           
+                           }
+                           
                            else{                  
                             if(dataForm?.location?.trim()==='' )
                             {
@@ -232,7 +261,10 @@ const NewJob = () => {
                                     })
                                     setFilteredCities([])     
                                 }
-                            }   
+                            
+                            }
+                           
+                           
                         },[id,dataForm.location,selectedCity]
                     )
     
@@ -240,19 +272,35 @@ const NewJob = () => {
     <div className='container-md-fluid container-lg p-0  ' >
         <div className="row p-0  m-0">
             <div className="col-12   col-md-9 mx-auto">
-                <form onSubmit={handleOnSubmit} className=' py-2   rounded '>                
+                <form onSubmit={handleOnSubmit} className=' py-2   rounded '>
+                   
+                   {jobToEdit?.imageUrl &&(  <img src={`${myServer}${jobToEdit?.imageUrl}`}   className="img-fluid d-block border" />)}               
                     <div className="  m-auto mb-1"> 
                         <ImageUpload getFile={handleImageChanged} />
                     </div>
+                     {imagePath}
+                    {jobToEdit?.imageURL}
+                    {dataForm?.imageURL}
                     <div className="  m-auto mb-1" >
                         <input type="text" value={dataForm.companyName} name='companyName' 
                             placeholder='Firma...'  onChange={handleOnChange} 
                             className=' form-control mb-1' />
                     </div>                
-                    <div className=" m-auto  mb-1" > 
-                        <input type="text" value={dataForm.title} name='title' 
-                        placeholder='Job Titel...'  onChange={handleOnChange} 
-                        className='col-6 form-control mb-1' />
+                    <div className="row m-auto  mb-1" > 
+                        <div className="col-6 p-0">
+                             <input type="text" value={dataForm.title} name='title' 
+                                placeholder='Job Titel...'  onChange={handleOnChange} 
+                                className='col-6 form-control mb-1' />
+                        </div>
+                        <div className="col-6 p-0">
+                            <select name="category" value={dataForm.category} onChange={handleOnCategoryChange} className='form-select'>
+                            <option value="">--Wähle den Bereich aus--</option>
+                            {categoriesList?.length>0 && (categoriesList.map((item,index)=>(<option key={index} value={item._id}>{item.category}</option>)))}
+                        </select>
+
+                        </div>
+                       
+                        
                     </div> 
                     <div  className="  m-auto mb-1">
                                     <div className="border rounded p-1 ">
@@ -322,7 +370,7 @@ const NewJob = () => {
                     <div className="w-lg-50 m-auto mb-1"> <Languges getLanguages={handleTasksSkillsLanguagesPerformances} initialLanguages={jobToEdit?.languages}/></div>                       
                     <div className=" m-auto mb-1">
                             <div className="  px-2 ">
-                                <label for="customRange" className="form-label"><strong>Gehalt</strong></label>
+                                <label className="form-label"><strong>Gehalt</strong></label>
                                 <div className=''>
                                 <div className="">
                                 <input  type="radio"name="salaryType" value="hourly"
@@ -343,7 +391,7 @@ const NewJob = () => {
                                             min={salaryType==='monthly' ? 550:15}
                                             max={salaryType==='monthly' ? 10000:100}
                                             step={salaryType==='monthly' ? 150:2}
-                                            value={dataForm.salary.amount}
+                                            value={dataForm?.salary?.amount}
                                             onChange={(e) =>
                                                 setDataForm((prev) => ({
                                                 ...prev,
@@ -355,7 +403,7 @@ const NewJob = () => {
                                 
 
                                 </div>
-                                <p>{dataForm.salary.type} : {dataForm.salary.amount}€</p>
+                                <p>{dataForm.salary?.type} : {dataForm.salary?.amount}€</p>
                             </div>
                     </div>
                     <div className="  m-auto mb-1 position-relative">                  

@@ -7,6 +7,7 @@ const protectRoute=asyncHandler(async(req,res,next)=>{
     if(!token)
     {
         res.status(401)
+        console.log('there is no Token from Frontend')
         throw new Error(' Access denied !!!!')
     }
     try {

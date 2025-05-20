@@ -60,6 +60,19 @@ const jobSchema=mongoose.Schema({
             }
         }
     ],
+    savedJobList:[
+        {
+            userId:{
+                type:String,
+                required:true,
+            },
+            savingDate:{
+                type:Date,
+                default:Date.now
+            }
+        }
+    ],
+    
     imageUrl:{
       type:String
 
@@ -70,6 +83,12 @@ const jobSchema=mongoose.Schema({
         required:true,
         ref:'User'
     },
+    category:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:'Category'
+    }
+   
     
 
 },{ timestamps: true })
