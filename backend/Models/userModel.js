@@ -21,6 +21,11 @@ const userSchema=mongoose.Schema({
         type: String,
         enum:['admin','editor','user'],
         default: 'user'
+    },
+    profile:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Profile',
+       sparse:true
     }
 
 },{ timestamps: true })

@@ -23,6 +23,7 @@ app.use(cors())
 
 //Routing
 app.use('/api/user',require('./Routers/authRoute'))
+app.use('/api/profile',require('./Routers/profileRoute'))
 app.use('/api/jobs',require('./Routers/jobRoute'))
 app.use('/api/categories',require('./Routers/categoryRoute'))
 app.use('/api/comments',require('./Routers/commentRoute'))

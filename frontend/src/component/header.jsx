@@ -82,6 +82,9 @@ useEffect(()=>{
                     {user.username}
                   </button>
                   <ul className="dropdown-menu border-0 text-center mt-2" aria-labelledby="navbarDropdown">
+                     <li><Link to="/profile"> Meine  Profil</Link> </li>
+                       
+                        <li ></li>
                         <li><Link to="/jobslist"> myJobs</Link> </li>
                        
                         <li > <Link onClick={handleSignOut}> Sign out</Link> </li>

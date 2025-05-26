@@ -50,7 +50,7 @@ function App() {
         <Route path="/showsearchresult" element={<ShowSerachResult />} />
         <Route path="/jobslist" element={<ProtectedRoute allowedRoles={['user','admin']}><JobsList /></ProtectedRoute>} ></Route>
         <Route path="/neweditjob/:id?" element={<ProtectedRoute allowedRoles={['user','admin']}><NewJob /></ProtectedRoute>}></Route>
-        <Route path="/myprofile" element={<ProtectedRoute allowedRoles={['user','admin']}><Me /></ProtectedRoute>}></Route>
+        <Route path="/profile" element={<ProtectedRoute allowedRoles={['user','admin']}><Me /></ProtectedRoute>}></Route>
         <Route path="/dashboard/" element={<ProtectedRoute allowedRoles={['user','admin']}><DashBoard/></ProtectedRoute>}>
              <Route path="category" element={<Category />}></Route>
         </Route>
