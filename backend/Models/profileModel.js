@@ -18,7 +18,7 @@ const profileSchema=mongoose.Schema({
                     start:{ type:Date  },
                     end:{type:Date    },
                     institute:{type:String},
-                    descriptions:[String]
+                    description:{type:String}
                }],
     
    skills:[{
@@ -33,7 +33,7 @@ const profileSchema=mongoose.Schema({
    projects:[{
     name:{type:String},
     description:{type:String},
-    technology:[String],
+    technologies:[String],
     link:{type:String}
    }]
 },{ timestamps: true })

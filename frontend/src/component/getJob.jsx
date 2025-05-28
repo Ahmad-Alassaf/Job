@@ -205,7 +205,7 @@ const GetJob = () => {
                       </ul>               
                    
                     Salary: <span className='text-muted fs-6'>{job.salary.amount}</span>
-                    <p className='text-muted fst-italic '> posted by : {job.user.username}</p> 
+                    <p className='text-muted fst-italic '> posted by : {job.user?.username}</p> 
                    
                 </div>
                 <div className="card-footer  d-flex justify-content-between text-primary">

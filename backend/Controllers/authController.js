@@ -43,10 +43,17 @@ const register=asyncHandler(async (req,res)=>{
     if(newUser)
     {
        const newProfile=await Profile.create({
-            user:newUser._id
+            user:newUser._id,
+            careerHistory:[],
+            education:[],
+            skills:[],
+            languages:[],
+            projects:[]
+
+
         })
         if(newProfile){
-            newUser.profile=newProfile._id
+            newUser.profile=newProfile
             await newUser.save()
         }
         res.status(200).json({
