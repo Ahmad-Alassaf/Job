@@ -23,7 +23,7 @@ const userSchema=mongoose.Schema({
         default: 'user'
     },
     profile:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,//profile id
         ref:'Profile',
        sparse:true
     }

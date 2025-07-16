@@ -19,26 +19,25 @@ const GetJob = () => {
        const [loading, setLoading] = useState(true)
        const myServer = process.env.NODE_ENV === 'production' 
   ? 'https://job-3f5h.onrender.com' 
-  : 'http://localhost:8000' 
+  : 'http://localhost:8080' 
+   const headers={
+          "Content-Type":"application/json",
+          Authorization:`Bearer ${user?.token}`
+      }
     const getJob=async()=>{
         try {
-           
             const response=await axios.get(`${myServer}/api/jobs/job/${id}`)
             if(response)
             {
-              
                 console.log(response.data)
                 setJob(response.data)
                 setLoading(false)
 
-            }
-                
-            
+            }   
         } catch (error) {
             console.log(error)
             
         }
-
     }
     const givePullLike=async(job)=>{
       try {
@@ -79,11 +78,7 @@ const GetJob = () => {
               "Content-Type":"application/json",
               Authorization:`Bearer ${user.token}`
           }
-          console.log(job.savedJobList.filter(item=>item.userId===user._id).length)
-          console.log('Job')
-         console.log(job)
-         console.log('user:')
-          console.log(user)
+        
        try {
          if(job.savedJobList.filter(item=>item.userId===user._id).length>0) 
           {
@@ -111,14 +106,29 @@ const GetJob = () => {
       }
     
     }
+    const handleApply=async(e)=>{
+      e.preventDefault()
+      try {
+        const response=await axios.get(`${myServer}/api/jobs/candidate/${job._id}`,{headers})
+         if (response.status === 200 || response.status === 201) {
+            
+              getJob()
+              
+            } else {
+              alert('Something went wrong!');
+            }
+                
+      } catch (error) {
+        console.log(error)
+        
+      }
+
+    }
    
     useEffect(()=>{
        
         getJob()
-       
-        
-            
-         
+      
 
     },[])
     const styles = {
@@ -209,12 +219,13 @@ const GetJob = () => {
                    
                 </div>
                 <div className="card-footer  d-flex justify-content-between text-primary">
+                  
                     <div className=''>
                          
                         <Comment job={job} /> 
 
                     </div>
-                  
+                      <div><button className='btn btn-primary' disabled={job.candidateList?.some(candidate=>candidate===user?._id) ? true:false} onClick={handleApply}>ich bin interessiert</button></div>
                     <div>
                         {job.savedJobList?.length } <button className={job.savedJobList?.some(saved=>saved.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary ' } onClick={()=>saveunsaveJob(job)}><FaStore /></button>
                         {job.likes.length }  <button className={job.likes.some(like=>like.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary '} onClick={()=>givePullLike(job)}>   <BiSolidLike /></button>

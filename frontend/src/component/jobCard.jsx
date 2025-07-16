@@ -13,7 +13,7 @@ import TimeAgo from './timeAgo'
 const JobCard = ({job}) => {
     const myServer = process.env.NODE_ENV === 'production' 
   ? '`https://job-3f5h.onrender.com' 
-  : 'http://localhost:8000';
+  : 'http://localhost:8080';
     const screen=useScreenSize()
     const navigate=useNavigate()
    
@@ -105,6 +105,7 @@ const style={
                     <p className='p-0 m-0 '>{job?.savedJobList.length}<FaStore /></p>
                     <p className='p-0 m-0 '>  {job?.likes.length } <BiSolidLike /></p>
                        
+                   
                </div>
          </div>
         

@@ -8,7 +8,7 @@ const Category = () => {
      const {user}=useSelector((state)=>state.auth)
      const myServer = process.env.NODE_ENV === 'production' 
   ? 'https://job-3f5h.onrender.com' 
-  : 'http://localhost:8000';
+  : 'http://localhost:8080';
     const [categoryTxt,setCategoryTxt]=useState('')
      const headers={
           "Content-Type":"application/json",

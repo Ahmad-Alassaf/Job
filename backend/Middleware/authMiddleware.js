@@ -8,7 +8,7 @@ const protectRoute=asyncHandler(async(req,res,next)=>{
     {
         res.status(401)
         console.log('there is no Token from Frontend')
-        throw new Error(' Access denied !!!!')
+        throw new Error('Access denied !!!!')
     }
     try {
         const verfiedUser=jwebtoken.verify(token.split(' ')[1],process.env.JWT_SECRET)

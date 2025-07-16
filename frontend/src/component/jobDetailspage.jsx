@@ -17,6 +17,7 @@ const JobDetailsPage = () => {
   
   return (
     <div className='container'>
+      
       <JobdetailsComponent job={job } />
       
     </div>)

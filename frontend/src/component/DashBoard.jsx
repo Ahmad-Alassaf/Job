@@ -3,7 +3,7 @@ import { Link,Outlet } from 'react-router-dom'
 
 const DashBoard = () => {
   return (
-    <div className='container py-1'>
+    <div className='container py-1 ' style={{minHeight:'100vh'}}>
       
             <nav className="navbar navbar-expand-lg navbar-light ">
                 <div className="container collapse navbar-collapse  " >

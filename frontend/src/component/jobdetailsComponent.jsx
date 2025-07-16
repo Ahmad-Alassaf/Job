@@ -19,7 +19,7 @@ const JobdetailsComponent = ({job}) => {
     const [loading, setLoading] = useState(true)
     const myServer = process.env.NODE_ENV === 'production' 
   ? 'https://job-3f5h.onrender.com' 
-  : 'http://localhost:8000';
+  : 'http://localhost:8080';
 const givePullLike=async(job)=>{
   try {
       const headers={
@@ -201,9 +201,13 @@ const styles = {
                     <p className='text-muted fst-italic '> posted by : {job.user.username}</p> 
                    
                 </div>
+                
                 <div className="card-footer  d-flex justify-content-between text-primary">
-                   <span className='text-primary ' style={{cursor: 'pointer'}} onClick={()=>toggleComment(job._id)}>comments</span>
+                  
+                  <div>
+                    <span className='text-primary ' style={{cursor: 'pointer'}} onClick={()=>toggleComment(job._id)}>comments</span>
                     { (addComment===job._id && showComments) ? <Comment job={job} /> :<></>}
+                  </div>
                     <div>
                         {job.savedJobList?.length } <button className={job.savedJobList?.some(saved=>saved.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary ' } onClick={()=>saveunsaveJob(job)}><FaStore /></button>
                         {job.likes.length }  <button className={job.likes.some(like=>like.userId===user?._id) ? 'btn btn-primary' : 'btn btn-secondary '} onClick={()=>givePullLike(job)}>   <BiSolidLike /></button>

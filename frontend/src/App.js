@@ -21,6 +21,8 @@ import JobDetailsPage from "./component/jobDetailspage";
 import GetJob from "./component/getJob";
 import DashBoard from "./component/DashBoard";
 import Category from "./component/category";
+import Footer from "./component/footer";
+import ContactUs from "./component/contactus";
 
 function App() {
   const [cityInfo,setCityInfo]=useState(null)
@@ -43,19 +45,21 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/accessdenied" element={<Accessdenied />} />
+        <Route path="/contactus" element={<ContactUs />} />
          <Route path="/job" element={<Job />} />
          <Route path="/newjob" element={<NewJob />} />
         <Route path="/job/:id" element={<GetJob />} />
-         <Route path="/JobDetailsPage" element={<JobDetailsPage />} />
+        
         <Route path="/showsearchresult" element={<ShowSerachResult />} />
-        <Route path="/jobslist" element={<ProtectedRoute allowedRoles={['user','admin']}><JobsList /></ProtectedRoute>} ></Route>
-        <Route path="/neweditjob/:id?" element={<ProtectedRoute allowedRoles={['user','admin']}><NewJob /></ProtectedRoute>}></Route>
-        <Route path="/profile" element={<ProtectedRoute allowedRoles={['user','admin']}><Me /></ProtectedRoute>}></Route>
+        <Route path="/jobslist" element={<ProtectedRoute allowedRoles={['user']}><JobsList /></ProtectedRoute>} ></Route>
+        <Route path="/neweditjob/:id?" element={<ProtectedRoute allowedRoles={['user']}><NewJob /></ProtectedRoute>}></Route>
+        <Route path="/profile" element={<ProtectedRoute allowedRoles={['user']}><Me /></ProtectedRoute>}></Route>
         <Route path="/dashboard/" element={<ProtectedRoute allowedRoles={['user','admin']}><DashBoard/></ProtectedRoute>}>
              <Route path="category" element={<Category />}></Route>
         </Route>
 
       </Routes>
+      <Footer />
     </Router>
   );
 }

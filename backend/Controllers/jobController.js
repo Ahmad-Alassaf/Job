@@ -1,5 +1,6 @@
 
 const Job = require('../Models/jobModel');
+const Profile=require('../Models/profileModel')
 const asyncHandler = require('express-async-handler');
 const fs = require('fs');
 const { json } = require('stream/consumers');
@@ -39,6 +40,7 @@ const addJob = asyncHandler(async (req, res) => {
             location,
             imageUrl: `/uploads/${req.file.filename}`, // Save file path
             likes: [],
+            candidateList:[],
             user: req.user.id,
             category:category
           })
@@ -271,6 +273,35 @@ const savingJob=asyncHandler(async(req,res)=>{
    
 
 })
+const addCandidate=asyncHandler(async(req,res)=>{
+    const job=await Job.findOne({_id:req.params.id})//get Job from database
+   
+    try {
+        const userId=req.user.id // get User ID that send request 
+      
+        job.candidateList.push(userId)
+           console.log(' job.candidateList', job.candidateList)
+        const savedJob=await Job.findByIdAndUpdate(job._id,job)
+        
+       
+       
+        if(!savedJob)
+        {
+            res.status(401)
+            throw new Error(' Job not Found !!!!')
+        }
+        res.status(200).json({
+            message:'candidateList updated',
+            job:savedJob
+
+        })
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+
+})
 const unsavingJob=asyncHandler(async(req,res)=>{
     
     const job=await Job.findById(req.params.id)
@@ -288,7 +319,26 @@ const unsavingJob=asyncHandler(async(req,res)=>{
 
     }
 })
+const getRecomendedJobs=asyncHandler(async(req,res)=>{
+    try {
+        console.log('req.params',req.params)
+        const fetchedProfile=await Profile.findOne({_id:req.params.id})
+        const skillsList=fetchedProfile.skills.map(skill=>skill.name.trim())
+        console.log('skillsList',skillsList)
+        const recomendedjobs=await Job.find({
+            skills:{$in:skillsList}
+        })
+        console.log('recomendedjobs',recomendedjobs)
+        res.status(200).json(recomendedjobs)
+
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+
+})
 
 module.exports={
-    addJob,getMyJobs,getJobs,getOneJob,setJob,deleteJob,like,pulllike,unsavingJob,savingJob
+    addJob,getMyJobs,getJobs,getOneJob,setJob,deleteJob,getRecomendedJobs,like,pulllike,unsavingJob,savingJob,addCandidate
 }

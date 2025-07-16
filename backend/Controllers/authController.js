@@ -39,7 +39,7 @@ const register=asyncHandler(async (req,res)=>{
         
    
    
-    console.log('newUser: ',newUser)
+   
     if(newUser)
     {
        const newProfile=await Profile.create({
@@ -84,7 +84,7 @@ const login=asyncHandler(async (req,res)=>{
     }
     const user=await User.findOne({email}).populate('profile')
 
-    console.log('User :',user)
+   
     if(  !user )
     {
         res.status(400)

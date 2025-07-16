@@ -60,6 +60,7 @@ const jobSchema=mongoose.Schema({
             }
         }
     ],
+    candidateList:[String],
     savedJobList:[
         {
             userId:{

@@ -4,7 +4,7 @@ const uploadImage=(req, res) => {
     }
     
     const imagePath = `uploads/${req.file.filename}`; // Save only image path
-    console.log(imagePath)
+  
     res.json({ imagePath }); // Send path to frontend
   }
   module.exports={
