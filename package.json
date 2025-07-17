@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "server": "node backend/server.js",
-    "client": " npm start --prefix frontend",
-   
-   "start":"npm run server"
+      "start": "node backend/server.js",
+  "client": "npm start --prefix frontend",
+  "build": "npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",

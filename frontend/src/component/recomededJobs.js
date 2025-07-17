@@ -9,7 +9,7 @@ const RecomededJobs = () => {
     const getRecomendedJobs=async()=>{
         try{
              const myServer = process.env.NODE_ENV === 'production' 
-                ? 'https://job-3f5h.onrender.com' 
+                ? 'https://mern-app-500349369882.europe-west3.run.app' 
                 : 'http://localhost:8000'
                 const headers={            
                             Authorization:`Bearer ${user.token}`

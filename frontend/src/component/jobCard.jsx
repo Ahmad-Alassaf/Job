@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import TimeAgo from './timeAgo'
 const JobCard = ({job}) => {
     const myServer = process.env.NODE_ENV === 'production' 
-  ? '`https://job-3f5h.onrender.com' 
+  ? 'https://mern-app-500349369882.europe-west3.run.app' 
   : 'http://localhost:8000';
     const screen=useScreenSize()
     const navigate=useNavigate()

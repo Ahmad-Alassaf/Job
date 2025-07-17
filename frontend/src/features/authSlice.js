@@ -13,7 +13,7 @@ const initialState={
 
 export const register=createAsyncThunk('auth/register',async(credintialData,ThunkAPI)=>{
     const myServer = process.env.NODE_ENV === 'production' 
-  ? '`https://job-3f5h.onrender.com' 
+  ? 'https://mern-app-500349369882.europe-west3.run.app' 
   : 'http://localhost:8000';
     try {
         
@@ -32,7 +32,7 @@ export const register=createAsyncThunk('auth/register',async(credintialData,Thun
 })
 export const login=createAsyncThunk('auth/login',async(credintialData,ThunkAPI)=>{
     const myServer = process.env.NODE_ENV === 'production' 
-  ? '`https://job-3f5h.onrender.com' 
+  ? 'https://mern-app-500349369882.europe-west3.run.app' 
   : 'http://localhost:8000';
     try {
         const response=await axios.post(`${myServer}/api/user/login`,credintialData)
