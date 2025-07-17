@@ -8,7 +8,7 @@ const path=require('path')
 const connectDataBase=require('./config/dataBaseConnection')
 const {errorHandler}=require('./Middleware/errorMiddleware')
 
-const port =process.env.PORT||8080
+const port =process.env.PORT||5000
 
 const cors=require('cors')
 const app=express()

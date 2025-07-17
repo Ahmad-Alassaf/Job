@@ -7,7 +7,7 @@ import {Link ,Navigate,useNavigate} from 'react-router-dom'
 const Search = ({ getCityData}) => {
   const myServer = process.env.NODE_ENV === 'production' 
   ? '`https://job-3f5h.onrender.com' 
-  : 'http://localhost:8080';
+  : 'http://localhost:8000';
    const [shadow, setShadow] = useState("7px 7px 10px rgba(0,0,0,0.5)")
    const [result,setResult]=useState([])
    const [city,setCity]=useState('')

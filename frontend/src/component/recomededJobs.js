@@ -10,7 +10,7 @@ const RecomededJobs = () => {
         try{
              const myServer = process.env.NODE_ENV === 'production' 
                 ? 'https://job-3f5h.onrender.com' 
-                : 'http://localhost:8080'
+                : 'http://localhost:8000'
                 const headers={            
                             Authorization:`Bearer ${user.token}`
                         }

@@ -14,7 +14,7 @@ const initialState={
 export const register=createAsyncThunk('auth/register',async(credintialData,ThunkAPI)=>{
     const myServer = process.env.NODE_ENV === 'production' 
   ? '`https://job-3f5h.onrender.com' 
-  : 'http://localhost:8080';
+  : 'http://localhost:8000';
     try {
         
         const response=await axios.post(`${myServer}/api/user/register`,credintialData)
@@ -33,7 +33,7 @@ export const register=createAsyncThunk('auth/register',async(credintialData,Thun
 export const login=createAsyncThunk('auth/login',async(credintialData,ThunkAPI)=>{
     const myServer = process.env.NODE_ENV === 'production' 
   ? '`https://job-3f5h.onrender.com' 
-  : 'http://localhost:8080';
+  : 'http://localhost:8000';
     try {
         const response=await axios.post(`${myServer}/api/user/login`,credintialData)
        
